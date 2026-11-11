@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/quickbite_user_db}
+    username: ${DB_USER:quickbite}
+    password: ${DB_PASSWORD:quickbite}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  # Phải trùng với gateway-service. Đổi trong môi trường thật (tối thiểu 32 ký tự).
+  secret: ${JWT_SECRET:dev-only-secret-change-me-in-production-32+}
+  ttl: ${JWT_TTL:8h}
+
+server:
+  port: ${PORT:8081}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/v1/users/actuator
+      exposure:
+        include: health
