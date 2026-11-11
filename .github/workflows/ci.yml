@@ -85,12 +85,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/user-service:${{ env.SHORT_SHA }}${{ secrets.DOCKER_USERNAME }}/user-service:latest
-
+      - name: Build and Push Docker Image
+        run: |
+          # Cắt lấy 7 ký tự đầu của mã commit làm tag phiên bản
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          
+          # Định nghĩa đúng chuẩn: <username>/<repository>:<tag>
+          IMAGE_TAG="${{ secrets.DOCKER_USERNAME }}/user-service:$COMMIT_SHA"
+          LATEST_TAG="${{ secrets.DOCKER_USERNAME }}/user-service:latest"
+          
+          echo "Building Docker image with tag: $IMAGE_TAG"
+          docker build -t $IMAGE_TAG -t $LATEST_TAG .
+          
+          echo "Pushing Docker images to Docker Hub..."
+          docker push $IMAGE_TAG
+          docker push $LATEST_TAG
