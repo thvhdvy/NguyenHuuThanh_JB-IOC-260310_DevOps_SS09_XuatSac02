@@ -67,7 +67,7 @@ jobs:
 
   dockerize:
     runs-on: ubuntu-latest
-    needs: builds
+    needs: build
     steps:  
       - name: Checkout source code
         uses: actions/checkout@v4
